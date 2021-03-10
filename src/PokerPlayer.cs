@@ -42,7 +42,7 @@ namespace Nancy.Simple
             {
                 return HasAnyVeryLowCard(ownPlayer)
                     ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
-                    : ownPlayer.stack;
+                    : GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
             }
 
             if (IsSuited(ownPlayer))
@@ -50,13 +50,13 @@ namespace Nancy.Simple
                 if (HasSequence(ownPlayer, gameState.community_cards))
                 {
                     Console.WriteLine("we have suited sequence");
-                    return ownPlayer.stack;
+                    GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
                 }
 
                 if (HasTwoGoodCards(ownPlayer))
                 {
                     Console.WriteLine("we have suited high cards");
-                    return ownPlayer.stack;
+                    GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
                 }
 
                 if (HasAnyGoodCard(ownPlayer))
@@ -69,26 +69,26 @@ namespace Nancy.Simple
             if (HasSequence(ownPlayer, gameState.community_cards))
             {
                 return HasAnyGoodCard(ownPlayer)
-                    ? ownPlayer.stack
+                    ? GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards)
                     : GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
 
             if (HasTopPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a top pair with community cards");
-                return ownPlayer.stack;
+                return GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
             }
 
             if (HasTwoPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have two pair with community cards");
-                return ownPlayer.stack;
+                return GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
             }
 
             if (HasSetWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a set with community cards");
-                return ownPlayer.stack;
+                return GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
             }
 
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
@@ -339,6 +339,21 @@ namespace Nancy.Simple
             }
 
             return 0;
+        }
+
+        private static bool IsLastRound(List<Card> communityCards)
+        {
+            return communityCards.Count == 5;
+        }
+
+        private static int GetCallOrAllIn(Player ownPlayer, int currentBuyIn, List<Card> communityCards)
+        {
+            if (IsLastRound(communityCards))
+            {
+                return ownPlayer.stack;
+            }
+                    
+            return GetCallAmount(ownPlayer, currentBuyIn);
         }
     }
 }
