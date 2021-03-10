@@ -81,7 +81,7 @@ namespace Nancy.Simple
                 return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
 
-            return 0;
+            return GetCallAmountIfVeryLow(ownPlayer, currentBuyIn);
         }
 
         public static void ShowDown(GameState gameState)
@@ -233,6 +233,17 @@ namespace Nancy.Simple
             }
 
             return amountToCall;
+        }
+
+        private static int GetCallAmountIfVeryLow(Player player, int currentBuyIn)
+        {
+            var amountToCall = currentBuyIn - player.bet;
+            if (amountToCall < 20)
+            {
+                return amountToCall;
+            }
+
+            return 0;
         }
     }
 }
