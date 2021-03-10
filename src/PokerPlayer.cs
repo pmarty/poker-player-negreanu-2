@@ -16,7 +16,7 @@ namespace Nancy.Simple
             var communityCards = gameState.community_cards;
             var currentBuyIn = gameState.current_buy_in;
 
-            if (HasPair(ownPlayer))
+            if (HasPair(ownPlayer) && !HasCommunityCards(communityCards))
             {
                 return HasAnyVeryLowCard(ownPlayer)
                     ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
@@ -190,6 +190,11 @@ namespace Nancy.Simple
         private static bool HasSequence(Player player, List<Card> communityCards)
         {
             return GetLongestSequence(player.hole_cards.Concat(communityCards).ToList()).Count > 0;
+        }
+
+        private static bool HasCommunityCards(IList<Card> communityCards)
+        {
+            return communityCards.Any();
         }
 
         private static List<Card> GetLongestSequence(List<Card> cards)
