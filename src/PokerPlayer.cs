@@ -8,13 +8,6 @@ namespace Nancy.Simple
 	{
 		public static readonly string VERSION = "HasPair";
 
-		public static int BetRequest(JObject gameState)
-		{
-			//TODO: Use this method to return the value You want to bet
-			return 1000;
-		}
-
-
 		public static int BetRequest(GameState gameState)
 		{
 			var ownPlayer = GetOwnPlayer(gameState);
