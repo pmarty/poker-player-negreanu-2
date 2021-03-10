@@ -227,8 +227,8 @@ namespace Nancy.Simple
 
             if (communityCards.Any())
             {
-                var firstCardRankCommunityCardCount = communityCards.Select(c => c.Rank == firstCardRank).Count();
-                var secondCardRankCommunityCardCount = communityCards.Select(c => c.Rank == secondCardRank).Count();
+                var firstCardRankCommunityCardCount = communityCards.Count(c => c.Rank == firstCardRank);
+                var secondCardRankCommunityCardCount = communityCards.Count(c => c.Rank == secondCardRank);
 
                 return firstCardRankCommunityCardCount > 1 || secondCardRankCommunityCardCount > 1;
             }
