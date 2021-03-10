@@ -6,7 +6,12 @@ namespace Nancy.Simple
     {
         public string rank { get; set; }
         public string suit { get; set; }
-        public Suit Suit => (Suit) Enum.Parse(typeof(Suit), suit, ignoreCase: true);
+
+        public Suit Suit
+        {
+            get { return (Suit) Enum.Parse(typeof(Suit), suit, ignoreCase: true); }
+        }
+
         public Rank Rank
         {
             get
