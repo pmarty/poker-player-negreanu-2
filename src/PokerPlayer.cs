@@ -31,6 +31,12 @@ namespace Nancy.Simple
                     return ownPlayer.stack;
                 }
 
+                if (HasTwoGoodCards(ownPlayer))
+                {
+                    Console.WriteLine("we have suited high cards");
+                    return ownPlayer.stack;
+                }
+
                 if (HasAnyGoodCard(ownPlayer))
                 {
                     Console.WriteLine("we have suited good card");
@@ -122,6 +128,11 @@ namespace Nancy.Simple
         private static bool HasAnyGoodCard(Player player)
         {
             return player.hole_cards.Any(c => c.Rank > Rank.Ten);
+        }
+        
+        private static bool HasTwoGoodCards(Player player)
+        {
+            return player.hole_cards.All(c => c.Rank > Rank.Ten);
         }
 
         private static bool HasAnyLowCard(Player player)
