@@ -21,6 +21,7 @@ namespace Nancy.Simple
 
 			Post ["/"] = parameters => {
 				var form = Request.Form;
+				Console.WriteLine("action:" + form ["action"].ToString());
 				string action = form ["action"];
 				switch (action) {
 				case "bet_request":
@@ -28,8 +29,10 @@ namespace Nancy.Simple
 					try
 					{
 						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
-						var bet = PokerPlayer.BetRequest (gameState).ToString ();
-						var betBytes = Encoding.UTF8.GetBytes (bet);
+						Console.WriteLine("deserialized state");
+						var bet = PokerPlayer.BetRequest(gameState).ToString();
+						Console.WriteLine("bettin:" + bet);
+						var betBytes = Encoding.UTF8.GetBytes(bet);
 						var response = new Response
 						{
 							ContentType = "text/plain",
