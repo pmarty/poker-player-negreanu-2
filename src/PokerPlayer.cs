@@ -89,7 +89,7 @@ namespace Nancy.Simple
         {
             return player.hole_cards.Any(
                 c => c.rank == "2" || c.rank == "3" || c.rank == "4"
-                     || c.rank == "5" || c.rank == "6" || c.rank == "7" || c.rank == "8");
+                     || c.rank == "5" || c.rank == "6" || c.rank == "7" || c.rank == "8" || c.rank == "9");
         }
 
         private static bool HasSequence(Player player)
