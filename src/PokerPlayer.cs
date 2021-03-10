@@ -31,9 +31,9 @@ namespace Nancy.Simple
 
             if (HasSequence(ownPlayer))
             {
-                return HasAnyReallyLowCard(ownPlayer)
-                    ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
-                    : ownPlayer.stack;
+                return HasAnyGoodCard(ownPlayer)
+                    ? ownPlayer.stack
+                    : GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
             
             if (HasPair(ownPlayer) && HasPairWithCommunityCards(ownPlayer, communityCards))
