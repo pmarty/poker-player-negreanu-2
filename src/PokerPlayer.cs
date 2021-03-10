@@ -23,10 +23,19 @@ namespace Nancy.Simple
                     : ownPlayer.stack;
             }
 
-            if (IsSuited(ownPlayer) && (HasAnyGoodCard(ownPlayer) || HasSequence(ownPlayer)))
+            if (IsSuited(ownPlayer))
             {
-                Console.WriteLine("we have good suited cards");
-                return ownPlayer.stack;
+                if (HasSequence(ownPlayer))
+                {
+                    Console.WriteLine("we have suited sequence");
+                    return ownPlayer.stack;
+                }
+
+                if (HasAnyGoodCard(ownPlayer))
+                {
+                    Console.WriteLine("we have suited good card");
+                    // return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
+                }
             }
 
             if (HasSequence(ownPlayer))
