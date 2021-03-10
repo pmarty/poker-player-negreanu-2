@@ -47,15 +47,29 @@ namespace Nancy.Simple
 				}
 				case "showdown":
 				{
-					var json = JObject.Parse (form ["game_state"]);
-					PokerPlayer.ShowDown (json);
-					var showDownBytes = Encoding.UTF8.GetBytes ("OK");
-					var response = new Response {
-						ContentType = "text/plain",
-						Contents = s => s.Write (showDownBytes, 0, showDownBytes.Length),
-						StatusCode = HttpStatusCode.OK
+					try
+					{
+						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
+						var bet = PokerPlayer.ShowDown(gameState).ToString ();
+						var betBytes = Encoding.UTF8.GetBytes (bet);
+						var response = new Response
+						{
+							ContentType = "text/plain",
+							Contents = s => s.Write(betBytes, 0, betBytes.Length),
+							StatusCode = HttpStatusCode.OK
+						};
+						return response;
+					}
+					catch (Exception e)
+					{
+						var showDownBytes = Encoding.UTF8.GetBytes ("OK");
+						var response = new Response {
+							ContentType = "text/plain",
+							Contents = s => s.Write (showDownBytes, 0, showDownBytes.Length),
+							StatusCode = HttpStatusCode.OK
+						};
+						return response;
 					};
-					return response;
 				}
 				case "version":
 				{
