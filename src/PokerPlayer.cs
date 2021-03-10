@@ -57,6 +57,12 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
+            if (HasSetWithCommunityCards(ownPlayer, communityCards))
+            {
+                Console.WriteLine("we have a set with community cards");
+                return ownPlayer.stack;
+            }
+
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a pair with community cards");
@@ -95,6 +101,22 @@ namespace Nancy.Simple
             var secondCardRank = player.hole_cards.Last().rank;
 
             return communityCards.Any(c => c.rank == firstCardRank || c.rank == secondCardRank);
+        }
+
+        private static bool HasSetWithCommunityCards(Player player, List<Card> communityCards)
+        {
+            var firstCardRank = player.hole_cards.First().Rank;
+            var secondCardRank = player.hole_cards.Last().Rank;
+
+            if (communityCards.Any())
+            {
+                var firstCardRankCommunityCardCount = communityCards.Select(c => c.Rank == firstCardRank).Count();
+                var secondCardRankCommunityCardCount = communityCards.Select(c => c.Rank == secondCardRank).Count();
+
+                return firstCardRankCommunityCardCount > 1 || secondCardRankCommunityCardCount > 1;
+            }
+
+            return false;
         }
         
         private static bool HasTopPairWithCommunityCards(Player player, List<Card> communityCards)
