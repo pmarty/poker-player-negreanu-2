@@ -7,7 +7,7 @@ namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "longestsequence";
+        public static readonly string VERSION = "straight detection";
 
         public static int BetRequest(GameState gameState)
         {
@@ -16,6 +16,11 @@ namespace Nancy.Simple
             var communityCards = gameState.community_cards;
             var currentBuyIn = gameState.current_buy_in;
             var allCards = ownPlayer.hole_cards.Concat(gameState.community_cards).ToList();
+
+            if (IsStraight(allCards))
+            {
+                return ownPlayer.stack;
+            }
 
             if (GetMaxSameOfAKindCount(allCards) > 2)
             {
@@ -61,7 +66,7 @@ namespace Nancy.Simple
                     ? ownPlayer.stack
                     : GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
-            
+
             if (HasPair(ownPlayer) && HasPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a set with community cards");
@@ -119,7 +124,6 @@ namespace Nancy.Simple
         private static int GetMaxSameOfAKindCount(List<Card> cards)
         {
             return cards.GroupBy(c => c.Rank).OrderByDescending(g => g.Count()).First().Count();
-
         }
 
         private static bool HasPair(Player player)
@@ -128,7 +132,7 @@ namespace Nancy.Simple
 
             return player.hole_cards.All(c => c.rank == cardRank);
         }
-        
+
         private static bool HasPairWithCommunityCards(Player player, List<Card> communityCards)
         {
             var firstCardRank = player.hole_cards.First().rank;
@@ -136,7 +140,7 @@ namespace Nancy.Simple
 
             return communityCards.Any(c => c.rank == firstCardRank || c.rank == secondCardRank);
         }
-        
+
         private static bool HasTwoPairWithCommunityCards(Player player, List<Card> communityCards)
         {
             var firstCardRank = player.hole_cards.First().Rank;
@@ -161,7 +165,7 @@ namespace Nancy.Simple
 
             return false;
         }
-        
+
         private static bool HasTopPairWithCommunityCards(Player player, List<Card> communityCards)
         {
             var firstCardRank = player.hole_cards.First().Rank;
@@ -177,6 +181,17 @@ namespace Nancy.Simple
             return false;
         }
 
+        private static bool IsStraightFlush(List<Card> cards)
+        {
+            var longestSequence = GetLongestSequence(cards);
+            return longestSequence.Count == 5 && longestSequence.Select(c => c.Suit).Distinct().Count() == 1;
+        }
+
+        private static bool IsStraight(List<Card> cards)
+        {
+            return GetLongestSequence(cards).Count == 5;
+        }
+
         private static bool IsSuited(Player player)
         {
             var suit = player.hole_cards.First().suit;
@@ -188,7 +203,7 @@ namespace Nancy.Simple
         {
             return player.hole_cards.Any(c => c.Rank > Rank.Ten);
         }
-        
+
         private static bool HasTwoGoodCards(Player player)
         {
             return player.hole_cards.All(c => c.Rank > Rank.Ten);
@@ -198,12 +213,12 @@ namespace Nancy.Simple
         {
             return player.hole_cards.Any(c => c.Rank < Rank.Ten);
         }
-        
+
         private static bool HasAnyVeryLowCard(Player player)
         {
             return player.hole_cards.Any(c => c.Rank < Rank.Seven);
         }
-        
+
         private static bool HasAnyReallyLowCard(Player player)
         {
             return player.hole_cards.Any(c => c.Rank < Rank.Five);
@@ -262,13 +277,13 @@ namespace Nancy.Simple
         {
             return currentBuyIn - player.bet;
         }
-        
+
         private static int GetCallAmountIfNotTooHigh(Player player, int currentBuyIn)
         {
             var maxShare = 0.25;
             var amountToCall = currentBuyIn - player.bet;
-            
-            var share = (double)amountToCall / (double)player.stack;
+
+            var share = (double) amountToCall / (double) player.stack;
             if (share > maxShare)
             {
                 return 0;
