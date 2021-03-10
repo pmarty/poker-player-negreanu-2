@@ -296,7 +296,7 @@ namespace Nancy.Simple
 
         private static bool HasSequenceWithoutCommunityCards(Player player)
         {
-            return GetLongestSequence(player.hole_cards).Count > 0;
+            return GetLongestSequence(player.hole_cards).Count > 1;
         }
 
         private static bool HasCommunityCards(IList<Card> communityCards)
