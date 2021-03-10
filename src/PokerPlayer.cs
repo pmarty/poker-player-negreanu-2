@@ -7,7 +7,7 @@ namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "straight detection";
+        public static readonly string VERSION = "fix showdown";
 
         public static int BetRequest(GameState gameState)
         {
@@ -109,11 +109,6 @@ namespace Nancy.Simple
             }
 
             return GetCallAmountIfVeryLow(ownPlayer, currentBuyIn);
-        }
-
-        public static void ShowDown(GameState gameState)
-        {
-            Console.WriteLine("Final Gamestate: " + JsonConvert.SerializeObject(gameState));
         }
 
         private static Player GetOwnPlayer(GameState gameState)
