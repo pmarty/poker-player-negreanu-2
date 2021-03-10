@@ -70,8 +70,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommunityCard.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="MainModule.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="PokerPlayer.cs" />
   </ItemGroup>
   <ItemGroup>

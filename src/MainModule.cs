@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Nancy.Simple
 {
@@ -25,14 +26,23 @@ namespace Nancy.Simple
 				case "bet_request":
 				{
 					var json = JObject.Parse (form ["game_state"]);
-					var bet = PokerPlayer.BetRequest (json).ToString ();
-					var betBytes = Encoding.UTF8.GetBytes (bet);
-					var response = new Response {
-						ContentType = "text/plain",
-						Contents = s => s.Write (betBytes, 0, betBytes.Length),
-						StatusCode = HttpStatusCode.OK
+					try
+					{
+						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
+						var bet = PokerPlayer.BetRequest (gameState).ToString ();
+						var betBytes = Encoding.UTF8.GetBytes (bet);
+						var response = new Response
+						{
+							ContentType = "text/plain",
+							Contents = s => s.Write(betBytes, 0, betBytes.Length),
+							StatusCode = HttpStatusCode.OK
+						};
+						return response;
+					}
+					catch (Exception e)
+					{
+						return Fallback(json);
 					};
-					return response;
 				}
 				case "showdown":
 				{
@@ -74,6 +84,19 @@ namespace Nancy.Simple
 					};
 				}
 			};
+		}
+
+		private static Response Fallback(dynamic json)
+		{
+			var bet = PokerPlayer.BetRequest(json).ToString();
+			var betBytes = Encoding.UTF8.GetBytes(bet);
+			var response = new Response
+			{
+				ContentType = "text/plain",
+				Contents = s => s.Write(betBytes, 0, betBytes.Length),
+				StatusCode = HttpStatusCode.OK
+			};
+			return response;
 		}
 	}
 }
