@@ -85,7 +85,7 @@ namespace Nancy.Simple
             if (HasTopPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a top pair with community cards");
-                return GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
+                return GetCallAmount(ownPlayer, currentBuyIn);
             }
 
             if (HasTwoPairWithCommunityCards(ownPlayer, communityCards))
