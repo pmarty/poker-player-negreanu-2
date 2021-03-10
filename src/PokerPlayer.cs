@@ -7,7 +7,7 @@ namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "Call if any good card and no low card";
+        public static readonly string VERSION = "Update";
 
         public static int BetRequest(GameState gameState)
         {
