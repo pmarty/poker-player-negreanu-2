@@ -11,7 +11,6 @@ namespace Nancy.Simple
 
         public static int BetRequest(GameState gameState)
         {
-            Console.WriteLine("Request Gamestate: " + JsonConvert.SerializeObject(gameState));
             var ownPlayer = GetOwnPlayer(gameState);
             var communityCards = gameState.community_cards;
             var currentBuyIn = gameState.current_buy_in;

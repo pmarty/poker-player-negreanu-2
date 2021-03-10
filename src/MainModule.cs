@@ -28,9 +28,7 @@ namespace Nancy.Simple
 					try
 					{
 						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
-						Console.WriteLine("deserialized state");
 						var bet = PokerPlayer.BetRequest(gameState).ToString();
-						Console.WriteLine("bettin:" + bet);
 						var betBytes = Encoding.UTF8.GetBytes(bet);
 						var response = new Response
 						{
