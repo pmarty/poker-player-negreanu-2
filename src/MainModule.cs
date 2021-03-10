@@ -41,6 +41,7 @@ namespace Nancy.Simple
 					}
 					catch (Exception e)
 					{
+						Console.WriteLine(e.ToString());
 						return Fallback(json);
 					};
 				}
@@ -88,7 +89,9 @@ namespace Nancy.Simple
 
 		private static Response Fallback(dynamic json)
 		{
-			var bet = PokerPlayer.BetRequest(json).ToString();
+			// just go all in
+			Console.WriteLine("falling back to all in");
+			var bet = 1000.ToString();
 			var betBytes = Encoding.UTF8.GetBytes(bet);
 			var response = new Response
 			{

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Nancy.Simple
@@ -20,6 +21,7 @@ namespace Nancy.Simple
 
 			if (HasPair(ownPlayer))
 			{
+				Console.WriteLine("we have a pair");
 				return ownPlayer.stack;
 			}
 
