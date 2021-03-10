@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Nancy.Simple
 {
     public class Player
@@ -8,5 +10,6 @@ namespace Nancy.Simple
         public string version { get; set; }
         public int stack { get; set; }
         public int bet { get; set; }
+        public List<Card> hole_cards { get; set; }
     }
 }

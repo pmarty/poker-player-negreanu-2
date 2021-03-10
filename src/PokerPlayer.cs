@@ -5,7 +5,7 @@ namespace Nancy.Simple
 {
 	public static class PokerPlayer
 	{
-		public static readonly string VERSION = "Default C# folding player";
+		public static readonly string VERSION = "Parse Gamestate";
 
 		public static int BetRequest(JObject gameState)
 		{
@@ -17,7 +17,7 @@ namespace Nancy.Simple
 		public static int BetRequest(GameState gameState)
 		{
 			//TODO: Use this method to return the value You want to bet
-			return gameState.Players.Single(p => p.name == "Negreanu 2").stack;
+			return gameState.Players[gameState.in_action].stack;
 		}
 
 		public static void ShowDown(JObject gameState)
