@@ -25,9 +25,9 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
-            if (HasAnyGoodCard(ownPlayer))
+            if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
             {
-                Console.WriteLine("we have a good card");
+                Console.WriteLine("we have a good card and now low card");
                 return ownPlayer.stack;
             }
 
@@ -61,6 +61,13 @@ namespace Nancy.Simple
         private static bool HasAnyGoodCard(Player player)
         {
             return player.hole_cards.Any(c => c.rank == "J" || c.rank == "Q" || c.rank == "K" || c.rank == "A");
+        }
+
+        private static bool HasAnyLowCard(Player player)
+        {
+            return player.hole_cards.Any(
+                c => c.rank == "2" || c.rank == "3" || c.rank == "4"
+                     || c.rank == "5" || c.rank == "6" || c.rank == "7" || c.rank == "8");
         }
     }
 }
