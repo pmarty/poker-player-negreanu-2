@@ -32,14 +32,14 @@ namespace Nancy.Simple
             if (HasSequence(ownPlayer))
             {
                 return HasAnyReallyLowCard(ownPlayer)
-                    ? GetCallAmount(ownPlayer, currentBuyIn)
+                    ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
                     : ownPlayer.stack;
             }
 
             if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
             {
                 Console.WriteLine("we have a good card and now low card");
-                return GetCallAmount(ownPlayer, currentBuyIn);
+                return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
 
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
@@ -113,6 +113,20 @@ namespace Nancy.Simple
         private static int GetCallAmount(Player player, int currentBuyIn)
         {
             return currentBuyIn - player.bet;
+        }
+        
+        private static int GetCallAmountIfNotTooHigh(Player player, int currentBuyIn)
+        {
+            var maxShare = 0.25;
+            var amountToCall = currentBuyIn - player.bet;
+            
+            var share = (double)amountToCall / (double)player.stack;
+            if (share > maxShare)
+            {
+                return 0;
+            }
+
+            return amountToCall;
         }
     }
 }
