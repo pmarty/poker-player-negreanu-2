@@ -25,7 +25,6 @@ namespace Nancy.Simple
 				switch (action) {
 				case "bet_request":
 				{
-					var json = JObject.Parse (form ["game_state"]);
 					try
 					{
 						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);

@@ -15,6 +15,17 @@ namespace Nancy.Simple
             var ownPlayer = GetOwnPlayer(gameState);
             var communityCards = gameState.community_cards;
             var currentBuyIn = gameState.current_buy_in;
+            var allCards = ownPlayer.hole_cards.Concat(gameState.community_cards).ToList();
+
+            if (GetMaxSameOfAKindCount(allCards) > 2)
+            {
+                return ownPlayer.stack;
+            }
+
+            if (HasTwoPairs(allCards))
+            {
+                return ownPlayer.stack;
+            }
 
             if (HasPair(ownPlayer) && !HasCommunityCards(communityCards))
             {
@@ -98,6 +109,17 @@ namespace Nancy.Simple
         private static Player GetOwnPlayer(GameState gameState)
         {
             return gameState.Players[gameState.in_action];
+        }
+
+        private static bool HasTwoPairs(List<Card> cards)
+        {
+            return cards.GroupBy(c => c.Rank).Count(g => g.Count() > 1) == 2;
+        }
+
+        private static int GetMaxSameOfAKindCount(List<Card> cards)
+        {
+            return cards.GroupBy(c => c.Rank).OrderByDescending(g => g.Count()).First().Count();
+
         }
 
         private static bool HasPair(Player player)
