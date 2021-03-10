@@ -25,7 +25,13 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
-            return ownPlayer.stack;
+            if (HasAnyGoodCard(ownPlayer))
+            {
+                Console.WriteLine("we have a good card");
+                return ownPlayer.stack;
+            }
+
+            return 0;
         }
 
         public static void ShowDown(GameState gameState)
@@ -44,12 +50,17 @@ namespace Nancy.Simple
 
             return player.hole_cards.All(c => c.rank == cardRank);
         }
-        
+
         private static bool IsSuited(Player player)
         {
             var suit = player.hole_cards.First().suit;
 
             return player.hole_cards.All(c => c.suit == suit);
+        }
+
+        private static bool HasAnyGoodCard(Player player)
+        {
+            return player.hole_cards.Any(c => c.rank == "J" || c.rank == "Q" || c.rank == "K" || c.rank == "A");
         }
     }
 }
