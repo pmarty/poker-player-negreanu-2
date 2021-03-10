@@ -16,7 +16,8 @@ namespace Nancy.Simple
         {
             get
             {
-                var isNumber = int.TryParse(rank, out var parsedRank);
+                int parsedRank = 0;
+                var isNumber = int.TryParse(rank, out parsedRank);
                 if (isNumber)
                 {
                     return (Rank) parsedRank;
