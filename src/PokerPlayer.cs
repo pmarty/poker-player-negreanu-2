@@ -21,7 +21,7 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
-            if (IsSuited(ownPlayer))
+            if (IsSuited(ownPlayer) && HasAnyGoodCard(ownPlayer))
             {
                 Console.WriteLine("we have suited cards");
                 return ownPlayer.stack;
@@ -29,7 +29,7 @@ namespace Nancy.Simple
 
             if (HasSequence(ownPlayer))
             {
-                Console.WriteLine("we have suited cards");
+                Console.WriteLine("we have a sequence");
                 return ownPlayer.stack;
             }
 
