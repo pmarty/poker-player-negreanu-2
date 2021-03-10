@@ -23,28 +23,33 @@ namespace Nancy.Simple
 
                 if (betAmountForStraights.HasValue)
                 {
+                    Console.WriteLine("we have some straight to bet on");
                     return betAmountForStraights.Value;
                 }
             }
 
             if (GetMaxSameOfAKindCount(allCards) > 2)
             {
+                Console.WriteLine("we have" + GetMaxSameOfAKindCount(allCards) + " same of a kind");
                 return ownPlayer.stack;
             }
 
             if (HasTwoPairs(allCards))
             {
+                Console.WriteLine("we have two pairs");
                 return ownPlayer.stack;
             }
 
             var betAmountForFlushes = GetBetAmountForFlushes(ownPlayer, allCards, communityCards, currentBuyIn);
             if (betAmountForFlushes.HasValue)
             {
+                Console.WriteLine("we're betting on a flush");
                 return betAmountForFlushes.Value;
             }
 
             if (HasPair(ownPlayer) && !HasCommunityCards(communityCards))
             {
+                Console.WriteLine("we have a pair on our hands");
                 return HasAnyVeryLowCard(ownPlayer)
                     ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
                     : GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
@@ -73,6 +78,7 @@ namespace Nancy.Simple
 
             if (communityCards.Count == 0 && HasSequenceWithoutCommunityCards(ownPlayer))
             {
+                Console.WriteLine("we a sequence on our hands");
                 return HasAnyGoodCard(ownPlayer)
                     ? GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards)
                     : GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
