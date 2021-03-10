@@ -7,7 +7,7 @@ namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "Update";
+        public static readonly string VERSION = "longestsequence";
 
         public static int BetRequest(GameState gameState)
         {
@@ -25,9 +25,15 @@ namespace Nancy.Simple
 
             if (IsSuited(ownPlayer))
             {
-                if (HasSequence(ownPlayer))
+                if (HasSequence(ownPlayer, gameState.community_cards))
                 {
                     Console.WriteLine("we have suited sequence");
+                    return ownPlayer.stack;
+                }
+
+                if (HasTwoGoodCards(ownPlayer))
+                {
+                    Console.WriteLine("we have suited high cards");
                     return ownPlayer.stack;
                 }
 
@@ -38,7 +44,7 @@ namespace Nancy.Simple
                 }
             }
 
-            if (HasSequence(ownPlayer))
+            if (HasSequence(ownPlayer, gameState.community_cards))
             {
                 return HasAnyGoodCard(ownPlayer)
                     ? ownPlayer.stack
@@ -145,6 +151,11 @@ namespace Nancy.Simple
         {
             return player.hole_cards.Any(c => c.Rank > Rank.Ten);
         }
+        
+        private static bool HasTwoGoodCards(Player player)
+        {
+            return player.hole_cards.All(c => c.Rank > Rank.Ten);
+        }
 
         private static bool HasAnyLowCard(Player player)
         {
@@ -161,11 +172,48 @@ namespace Nancy.Simple
             return player.hole_cards.Any(c => c.Rank < Rank.Five);
         }
 
-        private static bool HasSequence(Player player)
+        private static bool HasSequence(Player player, List<Card> communityCards)
         {
-            var rank1 = (int)player.hole_cards.First().Rank;
-            var rank2 = (int)player.hole_cards.Last().Rank;
-            return rank1 + 1 == rank2 || rank1 - 1 == rank2;
+            return GetLongestSequence(player.hole_cards.Concat(communityCards).ToList()).Count > 0;
+        }
+
+        private static List<Card> GetLongestSequence(List<Card> cards)
+        {
+            var cardsSorted = cards.OrderBy(c => c.Rank).ToArray();
+            //start and length are the "current" values and max are the max found
+            int start = 0, length = 0, maxstart = 0, maxlength = 0;
+            //loop through array (starting from index 1 to avoid out of bounds)
+            for (int i = 1; i < cardsSorted.Length; i++)
+            {
+                //check if current sequence is longer than previously recorded
+                if (length > maxlength)
+                {
+                    maxstart = start;
+                    maxlength = length;
+                }
+
+                if (cardsSorted[i - 1].Rank + 1 == cardsSorted[i].Rank)
+                {
+                    //if the current element isn't part of the current sequence, then start a new sequence
+                    if (start + length < i)
+                    {
+                        start = i - 1;
+                        length = 2;
+                    }
+                    else
+                    {
+                        //count the length
+                        length++;
+                    }
+                }
+            }
+
+            if (maxlength == 0)
+            {
+                return new List<Card>();
+            }
+
+            return cardsSorted.Skip(maxstart).Take(maxlength).ToList();
         }
 
         private static int GetCallAmount(Player player, int currentBuyIn)

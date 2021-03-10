@@ -42,7 +42,7 @@ namespace Nancy.Simple
 					catch (Exception e)
 					{
 						Console.WriteLine(e.ToString());
-						return Fallback(json);
+						return Fallback();
 					};
 				}
 				case "showdown":
@@ -62,6 +62,7 @@ namespace Nancy.Simple
 					}
 					catch (Exception e)
 					{
+						Console.WriteLine(e.ToString());
 						var showDownBytes = Encoding.UTF8.GetBytes ("OK");
 						var response = new Response {
 							ContentType = "text/plain",
@@ -101,7 +102,7 @@ namespace Nancy.Simple
 			};
 		}
 
-		private static Response Fallback(dynamic json)
+		private static Response Fallback()
 		{
 			// just go all in
 			Console.WriteLine("falling back to all in");
