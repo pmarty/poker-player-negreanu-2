@@ -17,9 +17,14 @@ namespace Nancy.Simple
             var currentBuyIn = gameState.current_buy_in;
             var allCards = ownPlayer.hole_cards.Concat(gameState.community_cards).ToList();
 
-            if (IsStraight(allCards))
+            if (communityCards.Count != 0)
             {
-                return ownPlayer.stack;
+                var betAmountForStraights = GetBetAmountForStraights(allCards, ownPlayer, communityCards, currentBuyIn);
+
+                if (betAmountForStraights.HasValue)
+                {
+                    return betAmountForStraights.Value;
+                }
             }
 
             if (GetMaxSameOfAKindCount(allCards) > 2)
@@ -47,7 +52,7 @@ namespace Nancy.Simple
 
             if (IsSuited(ownPlayer))
             {
-                if (HasSequence(ownPlayer, gameState.community_cards))
+                if (communityCards.Count == 0 && HasSequenceWithoutCommunityCards(ownPlayer))
                 {
                     Console.WriteLine("we have suited sequence");
                     GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
@@ -66,7 +71,7 @@ namespace Nancy.Simple
                 }
             }
 
-            if (HasSequence(ownPlayer, gameState.community_cards))
+            if (communityCards.Count == 0 && HasSequenceWithoutCommunityCards(ownPlayer))
             {
                 return HasAnyGoodCard(ownPlayer)
                     ? GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards)
@@ -151,6 +156,33 @@ namespace Nancy.Simple
                 {
                     return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
                 }
+            }
+
+            return null;
+        }
+
+        private static int? GetBetAmountForStraights(List<Card> allCards, Player ownPlayer, List<Card> communityCards, int currentBuyIn)
+        {
+            var maxSequence = GetLongestSequence(allCards).Count;
+
+            if (maxSequence >= 5)
+            {
+                return ownPlayer.stack;
+            }
+
+            if (maxSequence == 4 && communityCards.Count < 4)
+            {
+                return ownPlayer.stack;
+            }
+                
+            if (maxSequence == 4 && communityCards.Count < 5)
+            {
+                return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
+            }
+
+            if (maxSequence == 3 && communityCards.Count < 4)
+            {
+                return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
 
             return null;
@@ -262,9 +294,9 @@ namespace Nancy.Simple
             return player.hole_cards.Any(c => c.Rank < Rank.Five);
         }
 
-        private static bool HasSequence(Player player, List<Card> communityCards)
+        private static bool HasSequenceWithoutCommunityCards(Player player)
         {
-            return GetLongestSequence(player.hole_cards.Concat(communityCards).ToList()).Count > 0;
+            return GetLongestSequence(player.hole_cards).Count > 0;
         }
 
         private static bool HasCommunityCards(IList<Card> communityCards)
