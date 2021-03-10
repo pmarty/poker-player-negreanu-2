@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -12,6 +13,7 @@ namespace Nancy.Simple
         {
             Console.WriteLine("Request Gamestate: " + JsonConvert.SerializeObject(gameState));
             var ownPlayer = GetOwnPlayer(gameState);
+            var communityCards = gameState.community_cards;
 
             if (HasPair(ownPlayer))
             {
@@ -37,6 +39,12 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
+            if (HasPairWithCommunityCards(ownPlayer, communityCards))
+            {
+                Console.WriteLine("we have a pair with community cards");
+                return ownPlayer.stack;
+            }
+
             return 0;
         }
 
@@ -55,6 +63,14 @@ namespace Nancy.Simple
             var cardRank = player.hole_cards.First().rank;
 
             return player.hole_cards.All(c => c.rank == cardRank);
+        }
+        
+        private static bool HasPairWithCommunityCards(Player player, List<Card> communityCards)
+        {
+            var firstCardRank = player.hole_cards.First().rank;
+            var secondCardRank = player.hole_cards.Last().rank;
+
+            return communityCards.Any(c => c.rank == firstCardRank || c.rank == secondCardRank);
         }
 
         private static bool IsSuited(Player player)
