@@ -23,16 +23,17 @@ namespace Nancy.Simple
                     : ownPlayer.stack;
             }
 
-            if (IsSuited(ownPlayer) && HasAnyGoodCard(ownPlayer))
+            if (IsSuited(ownPlayer) && (HasAnyGoodCard(ownPlayer) || HasSequence(ownPlayer)))
             {
-                Console.WriteLine("we have suited cards");
+                Console.WriteLine("we have good suited cards");
                 return ownPlayer.stack;
             }
 
             if (HasSequence(ownPlayer))
             {
-                Console.WriteLine("we have a sequence");
-                return ownPlayer.stack;
+                return HasAnyReallyLowCard(ownPlayer)
+                    ? GetCallAmount(ownPlayer, currentBuyIn)
+                    : ownPlayer.stack;
             }
 
             if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
@@ -98,6 +99,12 @@ namespace Nancy.Simple
         {
             return player.hole_cards.Any(
                 c => c.rank == "2" || c.rank == "3" || c.rank == "4" || c.rank == "5" || c.rank == "6");
+        }
+        
+        private static bool HasAnyReallyLowCard(Player player)
+        {
+            return player.hole_cards.Any(
+                c => c.rank == "2" || c.rank == "3" || c.rank == "4");
         }
 
         private static bool HasSequence(Player player)
