@@ -27,6 +27,12 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
+            var betAmountForFlushes = GetBetAmountForFlushes(ownPlayer, allCards, communityCards, currentBuyIn);
+            if (betAmountForFlushes.HasValue)
+            {
+                return betAmountForFlushes.Value;
+            }
+
             if (HasPair(ownPlayer) && !HasCommunityCards(communityCards))
             {
                 return HasAnyVeryLowCard(ownPlayer)
@@ -51,7 +57,7 @@ namespace Nancy.Simple
                 if (HasAnyGoodCard(ownPlayer))
                 {
                     Console.WriteLine("we have suited good card");
-                    // return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
+                    return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
                 }
             }
 
@@ -119,7 +125,44 @@ namespace Nancy.Simple
         private static int GetMaxSameOfAKindCount(List<Card> cards)
         {
             return cards.GroupBy(c => c.Rank).OrderByDescending(g => g.Count()).First().Count();
+        }
 
+        private static int? GetBetAmountForFlushes(Player ownPlayer, List<Card> allCards, List<Card> communityCards, int currentBuyIn)
+        {
+            var maxSameSuit = GetMaxSameSuit(ownPlayer, allCards);
+
+            if (maxSameSuit > 2)
+            {
+                if (maxSameSuit >= 5)
+                {
+                    return ownPlayer.stack;
+                }
+
+                if (maxSameSuit == 4 && communityCards.Count < 4)
+                {
+                    return ownPlayer.stack;
+                }
+
+                if (maxSameSuit == 4 && communityCards.Count < 5)
+                {
+                    return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
+                }
+
+                if (communityCards.Count < 4)
+                {
+                    return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
+                }
+            }
+
+            return null;
+        }
+
+        private static int GetMaxSameSuit(Player player, List<Card> cards)
+        {
+            var suitOne = player.hole_cards.First().Suit;
+            var suitTwo = player.hole_cards.Last().Suit;
+
+            return Math.Max(cards.Count(c => c.Suit == suitOne), cards.Count(c => c.Suit == suitTwo));
         }
 
         private static bool HasPair(Player player)
