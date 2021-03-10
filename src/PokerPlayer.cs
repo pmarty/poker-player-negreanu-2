@@ -9,7 +9,7 @@ namespace Nancy.Simple
 		public static int BetRequest(JObject gameState)
 		{
 			//TODO: Use this method to return the value You want to bet
-			return 2;
+			return 1000;
 		}
 
 		public static void ShowDown(JObject gameState)
