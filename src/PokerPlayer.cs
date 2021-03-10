@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "fix showdown";
+        public static readonly string VERSION = "final";
 
         public static int BetRequest(GameState gameState)
         {
@@ -262,17 +261,6 @@ namespace Nancy.Simple
             return false;
         }
 
-        private static bool IsStraightFlush(List<Card> cards)
-        {
-            var longestSequence = GetLongestSequence(cards);
-            return longestSequence.Count == 5 && longestSequence.Select(c => c.Suit).Distinct().Count() == 1;
-        }
-
-        private static bool IsStraight(List<Card> cards)
-        {
-            return GetLongestSequence(cards).Count == 5;
-        }
-
         private static bool IsSuited(Player player)
         {
             var suit = player.hole_cards.First().suit;
@@ -299,12 +287,6 @@ namespace Nancy.Simple
         {
             return player.hole_cards.Any(c => c.Rank < Rank.Seven);
         }
-
-        private static bool HasAnyReallyLowCard(Player player)
-        {
-            return player.hole_cards.Any(c => c.Rank < Rank.Five);
-        }
-
         private static bool HasSequenceWithoutCommunityCards(Player player)
         {
             return GetLongestSequence(player.hole_cards).Count > 1;
@@ -376,7 +358,7 @@ namespace Nancy.Simple
         private static int GetCallAmountIfVeryLow(Player player, int currentBuyIn)
         {
             var amountToCall = currentBuyIn - player.bet;
-            if (amountToCall < 20)
+            if (amountToCall < 50)
             {
                 return amountToCall;
             }
