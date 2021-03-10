@@ -16,10 +16,11 @@ namespace Nancy.Simple
             var communityCards = gameState.community_cards;
             var currentBuyIn = gameState.current_buy_in;
 
-            if (HasPair(ownPlayer) && !HasAnyVeryLowCard(ownPlayer))
+            if (HasPair(ownPlayer))
             {
-                Console.WriteLine("we have a pair");
-                return ownPlayer.stack;
+                return HasAnyVeryLowCard(ownPlayer)
+                    ? GetCallAmount(ownPlayer, currentBuyIn)
+                    : ownPlayer.stack;
             }
 
             if (IsSuited(ownPlayer) && HasAnyGoodCard(ownPlayer))
