@@ -54,7 +54,7 @@ namespace Nancy.Simple
                     : GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
             }
 
-            if (IsSuited(ownPlayer))
+            if (IsSuited(ownPlayer) && !communityCards.Any())
             {
                 if (communityCards.Count == 0 && HasSequenceWithoutCommunityCards(ownPlayer))
                 {
