@@ -33,7 +33,7 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
-            if (HasTwoPairs(allCards))
+            if (HasTwoPairs(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have two pairs");
                 return ownPlayer.stack;
@@ -121,9 +121,20 @@ namespace Nancy.Simple
             return gameState.Players[gameState.in_action];
         }
 
-        private static bool HasTwoPairs(List<Card> cards)
+        private static bool HasTwoPairs(Player player, List<Card> communityCards)
         {
-            return cards.GroupBy(c => c.Rank).Count(g => g.Count() > 1) == 2;
+            var firstCardRank = player.hole_cards.First().Rank;
+            var secondCardRank = player.hole_cards.Last().Rank;
+
+            if (communityCards.Any())
+            {
+                var hasCommunityRank1 = communityCards.Any(c => c.Rank == firstCardRank);
+                var hasCommunityRank2 = communityCards.Any(c => c.Rank == secondCardRank);
+
+                return hasCommunityRank1 && hasCommunityRank2;
+            }
+
+            return false;
         }
 
         private static int GetMaxSameOfAKindCount(List<Card> cards)
