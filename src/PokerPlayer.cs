@@ -35,6 +35,7 @@ namespace Nancy.Simple
 
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
             {
+                Console.WriteLine("we have a pair with community cards");
                 return ownPlayer.stack;
             }
 
