@@ -7,13 +7,14 @@ namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "Logging";
+        public static readonly string VERSION = "Call if any good card and no low card";
 
         public static int BetRequest(GameState gameState)
         {
             Console.WriteLine("Request Gamestate: " + JsonConvert.SerializeObject(gameState));
             var ownPlayer = GetOwnPlayer(gameState);
             var communityCards = gameState.community_cards;
+            var currentBuyIn = gameState.current_buy_in;
 
             if (HasPair(ownPlayer))
             {
@@ -36,7 +37,7 @@ namespace Nancy.Simple
             if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
             {
                 Console.WriteLine("we have a good card and now low card");
-                return ownPlayer.stack;
+                return GetCallAmount(ownPlayer, currentBuyIn);
             }
 
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
@@ -117,6 +118,11 @@ namespace Nancy.Simple
 
             return rank1 == "J" && rank2 == "Q" || rank1 == "Q" && rank2 == "J" || rank1 == "Q" && rank2 == "K"
                    || rank1 == "K" && rank2 == "Q" || rank1 == "A" && rank2 == "K" || rank1 == "K" && rank2 == "A";
+        }
+
+        private static int GetCallAmount(Player player, int currentBuyIn)
+        {
+            return currentBuyIn - player.bet;
         }
     }
 }
