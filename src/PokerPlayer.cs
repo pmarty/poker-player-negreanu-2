@@ -35,17 +35,29 @@ namespace Nancy.Simple
                     ? GetCallAmount(ownPlayer, currentBuyIn)
                     : ownPlayer.stack;
             }
-
-            if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
+            
+            if (HasPair(ownPlayer) && HasPairWithCommunityCards(ownPlayer, communityCards))
             {
-                Console.WriteLine("we have a good card and now low card");
-                return GetCallAmount(ownPlayer, currentBuyIn);
+                Console.WriteLine("we have a set with community cards");
+                return ownPlayer.stack;
+            }
+
+            if (HasTopPairWithCommunityCards(ownPlayer, communityCards))
+            {
+                Console.WriteLine("we have a top pair with community cards");
+                return ownPlayer.stack;
             }
 
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a pair with community cards");
-                return ownPlayer.stack;
+                return GetCallAmount(ownPlayer, currentBuyIn);
+            }
+
+            if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
+            {
+                Console.WriteLine("we have a good card and now low card");
+                return GetCallAmount(ownPlayer, currentBuyIn);
             }
 
             return 0;
@@ -74,6 +86,21 @@ namespace Nancy.Simple
             var secondCardRank = player.hole_cards.Last().rank;
 
             return communityCards.Any(c => c.rank == firstCardRank || c.rank == secondCardRank);
+        }
+        
+        private static bool HasTopPairWithCommunityCards(Player player, List<Card> communityCards)
+        {
+            var firstCardRank = player.hole_cards.First().Rank;
+            var secondCardRank = player.hole_cards.Last().Rank;
+
+            if (communityCards.Any())
+            {
+                var topCommunityRank = communityCards.Select(c => c.Rank).OrderByDescending(r => r).First();
+
+                return topCommunityRank == firstCardRank || topCommunityRank == secondCardRank;
+            }
+
+            return false;
         }
 
         private static bool IsSuited(Player player)
