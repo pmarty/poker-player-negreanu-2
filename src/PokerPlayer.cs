@@ -73,12 +73,6 @@ namespace Nancy.Simple
                     : GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
 
-            if (HasPair(ownPlayer) && HasPairWithCommunityCards(ownPlayer, communityCards))
-            {
-                Console.WriteLine("we have a set with community cards");
-                return ownPlayer.stack;
-            }
-
             if (HasTopPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a top pair with community cards");
