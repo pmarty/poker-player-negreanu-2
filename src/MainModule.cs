@@ -28,7 +28,6 @@ namespace Nancy.Simple
 					var json = JObject.Parse (form ["game_state"]);
 					try
 					{
-						Console.WriteLine("request form gamestate: " + form ["game_state"]);
 						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
 						var bet = PokerPlayer.BetRequest (gameState).ToString ();
 						var betBytes = Encoding.UTF8.GetBytes (bet);

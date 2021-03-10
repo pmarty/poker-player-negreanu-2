@@ -76,6 +76,8 @@
     <Compile Include="App.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PokerPlayer.cs" />
+    <Compile Include="Rank.cs" />
+    <Compile Include="Suit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

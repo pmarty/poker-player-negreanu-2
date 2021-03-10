@@ -85,20 +85,17 @@ namespace Nancy.Simple
 
         private static bool HasAnyGoodCard(Player player)
         {
-            return player.hole_cards.Any(c => c.rank == "J" || c.rank == "Q" || c.rank == "K" || c.rank == "A");
+            return player.hole_cards.Any(c => c.Rank > Rank.Ten);
         }
 
         private static bool HasAnyLowCard(Player player)
         {
-            return player.hole_cards.Any(
-                c => c.rank == "2" || c.rank == "3" || c.rank == "4"
-                     || c.rank == "5" || c.rank == "6" || c.rank == "7" || c.rank == "8" || c.rank == "9");
+            return player.hole_cards.Any(c => c.Rank < Rank.Ten);
         }
         
         private static bool HasAnyVeryLowCard(Player player)
         {
-            return player.hole_cards.Any(
-                c => c.rank == "2" || c.rank == "3" || c.rank == "4" || c.rank == "5" || c.rank == "6");
+            return player.hole_cards.Any(c => c.Rank < Rank.Seven);
         }
         
         private static bool HasAnyReallyLowCard(Player player)
@@ -109,29 +106,9 @@ namespace Nancy.Simple
 
         private static bool HasSequence(Player player)
         {
-            var rank1 = player.hole_cards.First().rank;
-            var rank2 = player.hole_cards.Last().rank;
-
-            var isNumber1 = int.TryParse(rank1, out var rank1Value);
-            var isNumber2 = int.TryParse(rank1, out var rank2Value);
-
-            if (isNumber1 && isNumber2)
-            {
-                return rank1Value + 1 == rank2Value || rank1Value - 1 == rank2Value;
-            }
-
-            if (isNumber1 && rank1Value == 10)
-            {
-                return rank2 == "J";
-            }
-
-            if (isNumber2 && rank2Value == 10)
-            {
-                return rank1 == "J";
-            }
-
-            return rank1 == "J" && rank2 == "Q" || rank1 == "Q" && rank2 == "J" || rank1 == "Q" && rank2 == "K"
-                   || rank1 == "K" && rank2 == "Q" || rank1 == "A" && rank2 == "K" || rank1 == "K" && rank2 == "A";
+            var rank1 = (int)player.hole_cards.First().Rank;
+            var rank2 = (int)player.hole_cards.Last().Rank;
+            return rank1 + 1 == rank2 || rank1 - 1 == rank2;
         }
 
         private static int GetCallAmount(Player player, int currentBuyIn)
