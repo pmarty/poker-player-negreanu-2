@@ -350,7 +350,7 @@ namespace Nancy.Simple
 
         private static int GetCallAmountIfNotTooHigh(Player player, int currentBuyIn)
         {
-            var maxShare = 0.25;
+            var maxShare = 0.35;
             var amountToCall = currentBuyIn - player.bet;
 
             var share = (double) amountToCall / (double) player.stack;
