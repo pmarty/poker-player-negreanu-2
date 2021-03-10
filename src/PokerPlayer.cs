@@ -19,7 +19,7 @@ namespace Nancy.Simple
             if (HasPair(ownPlayer))
             {
                 return HasAnyVeryLowCard(ownPlayer)
-                    ? GetCallAmount(ownPlayer, currentBuyIn)
+                    ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
                     : ownPlayer.stack;
             }
 
@@ -51,7 +51,7 @@ namespace Nancy.Simple
             if (HasPairWithCommunityCards(ownPlayer, communityCards))
             {
                 Console.WriteLine("we have a pair with community cards");
-                return GetCallAmount(ownPlayer, currentBuyIn);
+                return GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
             }
 
             if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
