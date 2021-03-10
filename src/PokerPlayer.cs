@@ -25,6 +25,12 @@ namespace Nancy.Simple
                 return ownPlayer.stack;
             }
 
+            if (HasSequence(ownPlayer))
+            {
+                Console.WriteLine("we have suited cards");
+                return ownPlayer.stack;
+            }
+
             if (HasAnyGoodCard(ownPlayer) && !HasAnyLowCard(ownPlayer))
             {
                 Console.WriteLine("we have a good card and now low card");
@@ -68,6 +74,33 @@ namespace Nancy.Simple
             return player.hole_cards.Any(
                 c => c.rank == "2" || c.rank == "3" || c.rank == "4"
                      || c.rank == "5" || c.rank == "6" || c.rank == "7" || c.rank == "8");
+        }
+
+        private static bool HasSequence(Player player)
+        {
+            var rank1 = player.hole_cards.First().rank;
+            var rank2 = player.hole_cards.Last().rank;
+
+            var isNumber1 = int.TryParse(rank1, out var rank1Value);
+            var isNumber2 = int.TryParse(rank1, out var rank2Value);
+
+            if (isNumber1 && isNumber2)
+            {
+                return rank1Value + 1 == rank2Value || rank1Value - 1 == rank2Value;
+            }
+
+            if (isNumber1 && rank1Value == 10)
+            {
+                return rank2 == "J";
+            }
+
+            if (isNumber2 && rank2Value == 10)
+            {
+                return rank1 == "J";
+            }
+
+            return rank1 == "J" && rank2 == "Q" || rank1 == "Q" && rank2 == "J" || rank1 == "Q" && rank2 == "K"
+                   || rank1 == "K" && rank2 == "Q" || rank1 == "A" && rank2 == "K" || rank1 == "K" && rank2 == "A";
         }
     }
 }
