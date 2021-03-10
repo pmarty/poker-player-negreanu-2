@@ -380,11 +380,11 @@ namespace Nancy.Simple
 
         private static int GetCallOrAllIn(Player ownPlayer, int currentBuyIn, List<Card> communityCards)
         {
-            // if (IsLastRound(communityCards))
-            // {
-            //     return ownPlayer.stack;
-            // }
-                    
+            if (IsLastRound(communityCards))
+            {
+                return ownPlayer.stack;
+            }
+
             return GetCallAmount(ownPlayer, currentBuyIn);
         }
     }
