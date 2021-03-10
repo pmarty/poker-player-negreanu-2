@@ -1,5 +1,4 @@
 using System;
-using Newtonsoft.Json.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -29,9 +28,7 @@ namespace Nancy.Simple
 					try
 					{
 						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
-						Console.WriteLine("deserialized state");
 						var bet = PokerPlayer.BetRequest(gameState).ToString();
-						Console.WriteLine("bettin:" + bet);
 						var betBytes = Encoding.UTF8.GetBytes(bet);
 						var response = new Response
 						{
@@ -49,34 +46,17 @@ namespace Nancy.Simple
 				}
 				case "showdown":
 				{
-					try
-					{
-						var gameState = JsonConvert.DeserializeObject<GameState>(form["game_state"]);
-						var bet = PokerPlayer.ShowDown(gameState).ToString ();
-						var betBytes = Encoding.UTF8.GetBytes (bet);
-						var response = new Response
-						{
-							ContentType = "text/plain",
-							Contents = s => s.Write(betBytes, 0, betBytes.Length),
-							StatusCode = HttpStatusCode.OK
-						};
-						return response;
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine(e.ToString());
-						var showDownBytes = Encoding.UTF8.GetBytes ("OK");
-						var response = new Response {
-							ContentType = "text/plain",
-							Contents = s => s.Write (showDownBytes, 0, showDownBytes.Length),
-							StatusCode = HttpStatusCode.OK
-						};
-						return response;
+					var showDownBytes = Encoding.UTF8.GetBytes ("OK");
+					var response = new Response {
+						ContentType = "text/plain",
+						Contents = s => s.Write (showDownBytes, 0, showDownBytes.Length),
+						StatusCode = HttpStatusCode.OK
 					};
+					return response;
 				}
 				case "version":
 				{
-					var versionBytes = Encoding.UTF8.GetBytes (PokerPlayer.VERSION);
+					var versionBytes = Encoding.UTF8.GetBytes(PokerPlayer.VERSION);
 					return new Response {
 						ContentType = "text/plain",
 						Contents = s => s.Write (versionBytes, 0, versionBytes.Length),

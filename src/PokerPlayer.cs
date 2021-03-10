@@ -7,11 +7,10 @@ namespace Nancy.Simple
 {
     public static class PokerPlayer
     {
-        public static readonly string VERSION = "straight detection";
+        public static readonly string VERSION = "fix showdown";
 
         public static int BetRequest(GameState gameState)
         {
-            Console.WriteLine("Request Gamestate: " + JsonConvert.SerializeObject(gameState));
             var ownPlayer = GetOwnPlayer(gameState);
             var communityCards = gameState.community_cards;
             var currentBuyIn = gameState.current_buy_in;
@@ -23,28 +22,33 @@ namespace Nancy.Simple
 
                 if (betAmountForStraights.HasValue)
                 {
+                    Console.WriteLine("we have some straight to bet on");
                     return betAmountForStraights.Value;
                 }
             }
 
             if (GetMaxSameOfAKindCount(allCards) > 2)
             {
+                Console.WriteLine("we have" + GetMaxSameOfAKindCount(allCards) + " same of a kind");
                 return ownPlayer.stack;
             }
 
             if (HasTwoPairs(allCards))
             {
+                Console.WriteLine("we have two pairs");
                 return ownPlayer.stack;
             }
 
             var betAmountForFlushes = GetBetAmountForFlushes(ownPlayer, allCards, communityCards, currentBuyIn);
             if (betAmountForFlushes.HasValue)
             {
+                Console.WriteLine("we're betting on a flush");
                 return betAmountForFlushes.Value;
             }
 
             if (HasPair(ownPlayer) && !HasCommunityCards(communityCards))
             {
+                Console.WriteLine("we have a pair on our hands");
                 return HasAnyVeryLowCard(ownPlayer)
                     ? GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn)
                     : GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards);
@@ -73,6 +77,7 @@ namespace Nancy.Simple
 
             if (communityCards.Count == 0 && HasSequenceWithoutCommunityCards(ownPlayer))
             {
+                Console.WriteLine("we a sequence on our hands");
                 return HasAnyGoodCard(ownPlayer)
                     ? GetCallOrAllIn(ownPlayer, currentBuyIn, communityCards)
                     : GetCallAmountIfNotTooHigh(ownPlayer, currentBuyIn);
@@ -109,11 +114,6 @@ namespace Nancy.Simple
             }
 
             return GetCallAmountIfVeryLow(ownPlayer, currentBuyIn);
-        }
-
-        public static void ShowDown(GameState gameState)
-        {
-            Console.WriteLine("Final Gamestate: " + JsonConvert.SerializeObject(gameState));
         }
 
         private static Player GetOwnPlayer(GameState gameState)
@@ -380,10 +380,10 @@ namespace Nancy.Simple
 
         private static int GetCallOrAllIn(Player ownPlayer, int currentBuyIn, List<Card> communityCards)
         {
-            if (IsLastRound(communityCards))
-            {
-                return ownPlayer.stack;
-            }
+            // if (IsLastRound(communityCards))
+            // {
+            //     return ownPlayer.stack;
+            // }
                     
             return GetCallAmount(ownPlayer, currentBuyIn);
         }
