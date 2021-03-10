@@ -100,8 +100,7 @@ namespace Nancy.Simple
         
         private static bool HasAnyReallyLowCard(Player player)
         {
-            return player.hole_cards.Any(
-                c => c.rank == "2" || c.rank == "3" || c.rank == "4");
+            return player.hole_cards.Any(c => c.Rank < Rank.Five);
         }
 
         private static bool HasSequence(Player player)
